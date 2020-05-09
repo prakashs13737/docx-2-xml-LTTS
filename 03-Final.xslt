@@ -18,9 +18,7 @@
     <!-- 24-oct-18: Added No-B-IT property Sindhu; data obtained from 01-W2H-CK.xslt-->
     <!-- 28-JUNE-19: To remove full b-i-u -->
     
-    <!--11/02/2019 following comented by prakash for remove the space intend in editor for mariyappan -->
-    
-    <xsl:output method="xml" use-character-maps="Ascii2Unicode" indent="no"/>    
+    <xsl:output method="xhtml" use-character-maps="Ascii2Unicode" indent="no"/>    
    <!-- <xsl:output method="xml" use-character-maps="Ascii2Unicode" indent="no"/>-->
     <xsl:param name="myNameSpace" select="'http://www.w3.org/1999/xhtml'"/>
     <!--<xsl:variable name="css" select="document('css.xml')"/>-->
@@ -69,9 +67,7 @@
         <xsl:choose>
             <xsl:when test="not(preceding-sibling::*[1][self::ol])">
                 <xsl:text>&#x000A;</xsl:text>
-                <!--11/02/2019 following comented by prakash for remove the space intend in editor for mariyappan -->
-                <!--<xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>-->
-                <xsl:text disable-output-escaping="yes">&lt;div style="</xsl:text>
+                <xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>
                 <xsl:choose>
                     <xsl:when test="@indent">
                         <xsl:text> margin-left:</xsl:text>
@@ -154,9 +150,7 @@
             </xsl:when>
             <xsl:when test="preceding-sibling::*[1][self::ol[@type]]">
                 <xsl:text>&#x000A;</xsl:text>
-                <!--11/02/2019 following comented by prakash for remove the space intend in editor for mariyappan -->
-                <!--<xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>-->
-                <xsl:text disable-output-escaping="yes">&lt;div style="</xsl:text>
+                <xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>
                 <xsl:choose>
                     <xsl:when test="@indent">
                         <xsl:text> margin-left:</xsl:text>
@@ -240,9 +234,7 @@
             </xsl:when>
             <xsl:when test="preceding-sibling::*[1][self::ol[@start]] and not(self::ol[@start])">
                 <xsl:text>&#x000A;</xsl:text>
-                <xsl:text disable-output-escaping="yes">&lt;div style="</xsl:text>
-                <!--11/02/2019 following comented by prakash for remove the space intend in editor for mariyappan -->
-                <!--<xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>-->
+                <xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>
                 <xsl:choose>
                     <xsl:when test="@indent">
                         <xsl:text> margin-left:</xsl:text>
@@ -348,9 +340,8 @@
     <xsl:template match="p[@type]">
         <xsl:variable name="class" select="@class"/>
         <xsl:variable name="type" select="@type"/>
-        <xsl:text disable-output-escaping="yes">&lt;div style="margin-left:</xsl:text>
-        <!--11/02/2019 following comented by prakash for remove the space intend in editor for mariyappan -->
-            <!--<xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>-->
+
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>
             <xsl:choose>
                 <xsl:when test="@indent">
                     <xsl:value-of select="@indent"/> 
@@ -534,26 +525,6 @@
                             <xsl:copy-of select="@*"/>
                             <xsl:value-of select="//EN[@ENid = $endnote-id2]"></xsl:value-of>
                             </xsl:element>                        
-                        </xsl:element>
-                    </xsl:when>
-                    <!--04/03/2020 span tag to move inside a tag  -->
-                    <xsl:when test="child::a[1]">
-                        <xsl:element name="a">
-                            <xsl:attribute name="href">
-                                <xsl:value-of select="a/@href"/>
-                            </xsl:attribute>
-                            <xsl:element name="span">
-                                <xsl:attribute name="class">
-                                    <xsl:value-of select="@class"/>
-                                </xsl:attribute>
-                                <xsl:attribute name="data-name">
-                                    <xsl:value-of select="@data-name"/>
-                                </xsl:attribute>
-                                <xsl:attribute name="style">
-                                    <xsl:value-of select="@style"/>
-                                </xsl:attribute>
-                                <xsl:value-of select="."/>
-                            </xsl:element>
                         </xsl:element>
                     </xsl:when>
                     <xsl:otherwise>
@@ -833,8 +804,7 @@
         <xsl:if
             test="not(preceding-sibling::*[1][self::ol[@type = 'a']])">
             <xsl:text>&#x000A;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;div style="</xsl:text>
-            <!--<xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>-->
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>
             <xsl:choose>
                 <xsl:when test="@indent">
                     <xsl:text> margin-left:</xsl:text>
@@ -929,9 +899,7 @@
         <xsl:if
             test="not(preceding-sibling::*[1][self::ol[@type = 'A']])">
             <xsl:text>&#x000A;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;div style="</xsl:text>
-
-            <!--<xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>-->
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>
             <xsl:choose>
                 <xsl:when test="@indent">
                     <xsl:text> margin-left:</xsl:text>
@@ -1023,11 +991,10 @@
     </xsl:template>
     
     <xsl:template match="ol[@type = 'i']">       
-        <xsl:if test="not(preceding-sibling::*[1][self::ol[@type = 'i']])">
+        <xsl:if
+            test="not(preceding-sibling::*[1][self::ol[@type = 'i']])">
             <xsl:text>&#x000A;</xsl:text>
-            <!--11/02/2019 following comented by prakash for remove the space intend in editor for mariyappan -->
-            <!--<xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>-->
-            <xsl:text disable-output-escaping="yes">&lt;div</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>
             <xsl:choose>
                 <xsl:when test="@indent">
                     <xsl:text> margin-left:</xsl:text>
@@ -1123,8 +1090,7 @@
         <xsl:if
             test="not(preceding-sibling::*[1][self::ol[@type = 'I']])">
             <xsl:text>&#x000A;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;div style="</xsl:text>
-            <!--<xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>-->
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative;</xsl:text>
             <xsl:choose>
                 <xsl:when test="@indent">
                     <xsl:text> margin-left:</xsl:text>
@@ -1239,8 +1205,7 @@
         <xsl:if
             test="not(preceding-sibling::*[1][self::ul[@style = 'o']])">
             <xsl:text>&#x000A;</xsl:text>
-            <xsl:text disable-output-escaping="yes">&lt;div style="margin-left:</xsl:text>
-            <!--<xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>-->
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>
             <xsl:choose>
                 <xsl:when test="@indent">
                     <xsl:value-of select="@indent"/> 

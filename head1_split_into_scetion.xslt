@@ -48,13 +48,18 @@
     <xsl:template match="p">
         <xsl:choose>
             <xsl:when test="child::img">
+                <xsl:variable name="image_name">
+                    <xsl:value-of select="child::img/@src[1]"/>    
+                </xsl:variable>
+                
                 <xsl:element name="fig">
                     <xsl:element name="title">
                         <xsl:choose>
                             <xsl:when test="following::p[@class = 'FigureLegend']">
                                 <xsl:value-of select="following::p[@class = 'FigureLegend'][1]/."/>
                             </xsl:when>
-                            <xsl:when test="following::p[@class = 'FigureLegend']"></xsl:when>
+                            <xsl:when test="following::p[@class = 'FigureLegend']">                              
+                            </xsl:when>
                         </xsl:choose>
                     </xsl:element>
                     <xsl:element name="image">
@@ -62,7 +67,7 @@
                             
                         </xsl:attribute>
                         <xsl:attribute name="href">
-                            <xsl:value-of select="substring-after(child::img/@src,'../images/')"/>
+                            <xsl:value-of select="substring-after($image_name,'../images/')"/>
                         </xsl:attribute>
                     </xsl:element>
                 </xsl:element>
@@ -184,7 +189,14 @@
     
     <xsl:template match="head"/>
     <xsl:template match="link"/>
-    
+    <xsl:template match="styles"/>
+    <xsl:template match="Relationships"/>
+    <xsl:template match="hdr"/>
+    <xsl:template match="ftr"/>
+    <xsl:template match="settings"/>
+    <xsl:template match="numbering"/>
+    <xsl:template match="fonts"/>
+    <xsl:template match="sectPr"/>
     <xsl:template match="@*"/>
     
         

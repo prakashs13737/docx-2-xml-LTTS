@@ -18,7 +18,7 @@
 <!-- 20-AUG-18:  To remove DIV tags for references and move its ID attr. and a-link inside LI or P tag other than S4C styles for REFERENCE-->
       <!-- 20-Sep-18: Ascii2Unicode changed -->
       <!--Ruta bibref 13-8-2019-->
-    <!--21/02/2020 commented by prakash for intend issue in editor and added href and id on "anchor Tag"-->
+      
       
       <!-- 4-oct-18: Added for HARI -->
       <!-- 02-JULY-19 -->
@@ -345,12 +345,8 @@
                               <xsl:copy-of select="ancestor::a/@data-alias"/>
                               <xsl:copy-of select="ancestor::a/@href"/>
                               <xsl:element name="a">
-                                  <!--21/02/2020 commented by prakash for intend issue in editor-->
-                                  <!-- <xsl:copy-of select="ancestor::a/@*"/>-->
-                                  <!--<xsl:apply-templates select="@*|node()"/>-->
-                                  <xsl:copy-of select="ancestor::a/@href"/>
-                                  <xsl:copy-of select="ancestor::div[1]/@id"/>
-                                  <xsl:apply-templates select="node()"/>
+                                    <xsl:copy-of select="ancestor::a/@*"/>
+                                    <xsl:apply-templates select="@*|node()"/>
                               </xsl:element>
                         </xsl:element>
                   </xsl:when>
@@ -370,12 +366,8 @@
                               <xsl:copy-of select="ancestor::a/@data-alias"/>
                               <xsl:copy-of select="ancestor::a/@href"/>
                               <xsl:element name="a">
-                                  <!--21/02/2020 commented by prakash for intend issue in editor-->
-                                  <!-- <xsl:copy-of select="ancestor::a/@*"/>-->
-                                  <!--<xsl:apply-templates select="@*|node()"/>-->
-                                  <xsl:copy-of select="ancestor::a/@href"/>
-                                  <xsl:copy-of select="ancestor::div[1]/@id"/>
-                                  <xsl:apply-templates select="node()"/>
+                                    <xsl:copy-of select="ancestor::a/@*"/>
+                                    <xsl:apply-templates select="@*|node()"/>
                               </xsl:element>
                         </xsl:element>
                   </xsl:when>
@@ -387,12 +379,8 @@
                               <xsl:copy-of select="ancestor::a/@data-alias"/>
                               <xsl:copy-of select="ancestor::a/@href"/>
                               <xsl:element name="a">
-                                  <!--21/02/2020 commented by prakash for intend issue in editor-->
-                                  <!-- <xsl:copy-of select="ancestor::a/@*"/>-->
-                                  <!--<xsl:apply-templates select="@*|node()"/>-->
-                                  <xsl:copy-of select="ancestor::a/@href"/>
-                                  <xsl:copy-of select="ancestor::div[1]/@id"/>
-                                  <xsl:apply-templates select="node()"/>
+                                    <xsl:copy-of select="ancestor::a/@*"/>
+                                    <xsl:apply-templates select="@*|node()"/>
                               </xsl:element>
                         </xsl:element>
                   </xsl:when>

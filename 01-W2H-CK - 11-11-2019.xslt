@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <!-- 08-10-15: for pubmed file i commented non line 482, please check for quick find, FIND the below line -->
 <!-- @@@make sure it is necessary comment -->
 <!-- "meta" parent of "title" commented to avoid PAGINA epub checker -->
@@ -103,6 +102,7 @@
 <!-- 26-JUNE-19: give rPr info except direct formating; see link "http://officeopenxml.com/WPparagraphProperties.php" and refer w:rPr DIRECT TEXT FORMATING -->
 <!-- KT: Added on 22-MAY-19; Developers: in case need group tag add the code -->
 <!-- 02-JULY-19 -->
+
 <!--Updated for single and mulitilevel w:lvl 12-7-2019-->
 <!--Added for table Caption ContentControl 16-7-2019-->
 <!--Added for Figure Caption ContentControl 16-7-2019-->
@@ -112,7 +112,9 @@
 <!--For data-alias value "SeqNo and SeqNo1" 5-8-2019-->
 <!--Added for "PhotoGroup" 5-8-2019-->
 <!--Updated for ck editor view on 6-8-2019-->
-<!--Changed id  TG to tablecation for  marriappan on 19-03-2020-->
+<!--Added for marriapan editior 20-9-2019-->
+<!--Added for mariyapan 23-9-2019-->
+<!--Added for marriappan 25-9-2019-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:xs="http://www.w3.org/2001/XMLSchema"
   xmlns:v="urn:schemas-microsoft-com:vml"
@@ -157,6 +159,7 @@
   <xsl:strip-space elements="*"/>
   <xsl:preserve-space elements="w:t"/>
   <xsl:param name="myNameSpace" select="'http://www.w3.org/1999/xhtml'"/>
+  
   <!-- Global Vaiable -->
   <!--<w:footnoteReference w:customMarkFollows="1" w:id="1"/>-->
   <xsl:variable name="custFootnote">
@@ -3538,14 +3541,13 @@
           </xsl:if>
           <!--<xsl:variable name="idval" select="descendant::w:sdtContent/w:p/w:sdt[1][w:sdtPr/w:alias/@w:val = 'SeqNo']/w:sdtContent/w:r/w:t[1]"/>-->
           <!-- The above was commented, due to Mariappan issue "3030579.v1.docx" -->
-         <!--Changed id  TG to tablecation for  marriappan on 19-03-2020-->
-         <!-- <xsl:variable name="idval" select="descendant::w:sdt[w:sdtPr/w:alias/@w:val = 'SeqNo'][1]/w:sdtContent/w:r/w:t[1]"/>
+          <xsl:variable name="idval" select="descendant::w:sdt[w:sdtPr/w:alias/@w:val = 'SeqNo'][1]/w:sdtContent/w:r/w:t[1]"/>
           <xsl:if test="string-length($idval) &gt; 0">
             <xsl:attribute name="id">
               <xsl:text>t</xsl:text>
               <xsl:value-of select="translate($idval, '  ', '')"/>
             </xsl:attribute>
-          </xsl:if>-->              
+          </xsl:if>              
           <xsl:apply-templates/>
           <xsl:text>&#x000A;</xsl:text>
         </xsl:element>
@@ -3568,14 +3570,13 @@
           </xsl:if>
           <!--<xsl:variable name="idval" select="descendant::w:sdtContent/w:p/w:sdt[1][w:sdtPr/w:alias/@w:val = 'SeqNo']/w:sdtContent/w:r/w:t[1]"/>-->
           <!-- The above was commented, due to Mariappan issue "3030579.v1.docx" -->
-           <!--Changed id  TG to tablecation for  marriappan on 19-03-2020-->
-          <!--<xsl:variable name="idval" select="descendant::w:sdt[w:sdtPr/w:alias/@w:val = 'SeqNo'][1]/w:sdtContent/w:r/w:t[1]"/>
+          <xsl:variable name="idval" select="descendant::w:sdt[w:sdtPr/w:alias/@w:val = 'SeqNo'][1]/w:sdtContent/w:r/w:t[1]"/>
           <xsl:if test="string-length($idval) &gt; 0">
             <xsl:attribute name="id">
               <xsl:text>st</xsl:text>
               <xsl:value-of select="translate($idval, '  ', '')"/>
             </xsl:attribute>
-          </xsl:if>-->              
+          </xsl:if>              
           <xsl:apply-templates/>
           <xsl:text>&#x000A;</xsl:text>
         </xsl:element>
@@ -3682,16 +3683,6 @@
               </xsl:attribute>
             </xsl:if> 
           </xsl:attribute>
-
- <!--Changed id  TG to tablecation for  marriappan on 19-03-2020-->
-           <xsl:variable name="idval" select="descendant::w:sdt[w:sdtPr/w:alias/@w:val = 'SeqNo'][1]/w:sdtContent/w:r/w:t[1]"/>
-          <xsl:if test="string-length($idval) &gt; 0">
-            <xsl:attribute name="id">
-              <xsl:text>t</xsl:text>
-              <xsl:value-of select="translate($idval, '  ', '')"/>
-            </xsl:attribute>
-          </xsl:if>
-          <!--End-->
           <xsl:apply-templates/>        
           <xsl:text>&#x000A;</xsl:text>
         </xsl:element>        
@@ -3712,15 +3703,6 @@
               </xsl:attribute>
             </xsl:if> 
           </xsl:attribute>
-          <!--Changed id  TG to tablecation for  marriappan on 19-03-2020-->
-           <xsl:variable name="idval" select="descendant::w:sdt[w:sdtPr/w:alias/@w:val = 'SeqNo'][1]/w:sdtContent/w:r/w:t[1]"/>
-          <xsl:if test="string-length($idval) &gt; 0">
-            <xsl:attribute name="id">
-              <xsl:text>t</xsl:text>
-              <xsl:value-of select="translate($idval, '  ', '')"/>
-            </xsl:attribute>
-          </xsl:if>
-          <!--End-->
           <xsl:apply-templates/>        
           <xsl:text>&#x000A;</xsl:text>
         </xsl:element>
@@ -46465,10 +46447,7 @@
   <xsl:template match="w:commentRangeStart">
     <xsl:variable name="commentN" select="@w:id"/>
     
-    <!--<xsl:text disable-output-escaping="yes">&lt;span data-commentrange="cmtStart" style="cursor:pointer;font-size:14px;vertical-align:super;" data-comment="cmt</xsl:text>-->
-    
-    <!--03/01/2020 added data-commentgroup="cmt" instead of data-comment="cmt" for mariyappan -->
-    <xsl:text disable-output-escaping="yes">&lt;span data-commentrange="cmtStart" style="cursor:pointer;font-size:14px;vertical-align:super;" data-commentgroup="cmt</xsl:text>
+    <xsl:text disable-output-escaping="yes">&lt;span data-commentrange="cmtStart" style="cursor:pointer;font-size:14px;vertical-align:super;" data-comment="cmt</xsl:text>
     <xsl:value-of select="$commentN"/>
     <xsl:text disable-output-escaping="yes">"&gt;</xsl:text>
     <!--<xsl:text disable-output-escaping="yes">&lt;img style="width:15px;height:15px;cursor:pointer;" data-commentimg="cmt</xsl:text>
@@ -46476,7 +46455,6 @@
     <xsl:text disable-output-escaping="yes">" src="ckeditor/images/comment.svg"/&gt;</xsl:text>-->
     <xsl:text disable-output-escaping="yes">&lt;/span&gt;</xsl:text>
   </xsl:template>
-  
   <xsl:template match="w:commentRangeEnd">    
     <xsl:variable name="commentN" select="@w:id"/>
     <xsl:text disable-output-escaping="yes">&lt;span data-commentrange="cmtEnd" data-comment="cmt</xsl:text>
@@ -46486,23 +46464,7 @@
     <xsl:value-of select="$commentN"/>
     <xsl:text disable-output-escaping="yes">" src="ckeditor/images/comment.svg"/&gt;</xsl:text>
   </xsl:template>
-  <!-- 02/01/2020  Prakash changed content controller for Mariyappan Requirement (img tag to span tag with attributes)-->
-  <xsl:template match="w:commentRangeEnd">    
-    <xsl:variable name="commentN" select="@w:id"/>
-    <xsl:text disable-output-escaping="yes">&lt;span data-commentrange="cmtEnd" data-comment="cmt</xsl:text>
-    <xsl:value-of select="$commentN"/>
-    <xsl:text disable-output-escaping="yes">" style="cursor:pointer;font-size:14px;vertical-align:super;"&gt;</xsl:text>
-    <!--<xsl:text disable-output-escaping="yes">"&gt;</xsl:text><xsl:text disable-output-escaping="yes">&lt;/span&gt;</xsl:text>
-    <xsl:text disable-output-escaping="yes">&lt;img style="width:15px;height:15px;cursor:pointer;" data-commentimg="cmt</xsl:text>-->
-    <xsl:text disable-output-escaping="yes">&lt;span class="comment-image" data-commentimg="cmt</xsl:text>
-    <xsl:value-of select="$commentN"/>
-    <!--<xsl:text disable-output-escaping="yes">" src="ckeditor/images/comment.svg"/&gt;</xsl:text>-->
-    <xsl:text disable-output-escaping="yes">" style="cursor:pointer; background: url(/html/portlet/document_library/ckeditor/images/comment.svg); width:15px; height:15px; cursor:pointer; display: inline-block; background-repeat: no-repeat;"&gt;</xsl:text>
-    <xsl:text disable-output-escaping="yes">&amp;#x200C;</xsl:text>
-    <xsl:text disable-output-escaping="yes">&lt;/span&gt;</xsl:text>
-    <xsl:text disable-output-escaping="yes">&amp;#x200C;</xsl:text>
-    <xsl:text disable-output-escaping="yes">&lt;/span&gt;</xsl:text>
-  </xsl:template>
+  
   <xsl:template match="w:commentReference">
     <xsl:variable name="commentN" select="@w:id"/>    
     <!-- <span style='cursor:pointer;font-size:14px;vertical-align:super;' data-comment='VALUE'>&#128172;</span> Refer Mail from Mariselvan Sat 8/5/2017 5:48 PM and Wed 8/9/2017 12:15 PM-->
@@ -46561,12 +46523,6 @@
       <!--<xsl:value-of select="//w:style[@w:styleId = $paragraphStyle]/w:name/@w:val"/>-->
       <xsl:value-of select="/w:document/w:styles/w:style[@w:styleId = $paragraphStyle][1]/w:name/@w:val"/>
     </xsl:variable>
-<!-- prakash s added on 10/01/2020 for mariyappn  -->
-    <!--<xsl:variable name="currentDate" select="string(current-date())"/>
-    <xsl:variable name="date" select="substring-before($currentDate,'+')"/>-->
-    <xsl:variable name="currentDate" select="@w:date"/>
-    <xsl:variable name="Date" select="substring-before($currentDate,'T')"/>
-    <xsl:variable name="data-user" select="@w:author"/>
     <xsl:text>&#x000A;</xsl:text>
     <xsl:element name="CommentReference">
       <xsl:attribute name="data-commentvalue">
@@ -46584,12 +46540,7 @@
             <xsl:attribute name="data-commentid">
               <xsl:value-of select="generate-id()"/>
             </xsl:attribute>
-            <!--<xsl:attribute name="data-user" select="translate(substring-before($commentValue, ':'),'&quot;&amp;#x0027;','')"/>-->
-            <xsl:attribute name="data-user" select="$data-user"/>
-            <xsl:attribute name="data-currentdate">
-              <!--<xsl:value-of select="$date"/> -->
-              <xsl:value-of select="$Date"/>  
-            </xsl:attribute>
+            <xsl:attribute name="data-user" select="translate(substring-before($commentValue, ':'),'&quot;&amp;#x0027;','')"/>
               <xsl:apply-templates/>
           </xsl:element>
         </xsl:for-each>
@@ -46672,8 +46623,8 @@
   </xsl:template>-->
   
   <!-- Footnote coding CK editor-->
-  <xsl:template match="w:footnoteReference">
-    
+  <xsl:template match="w:footnoteReference">    
+  
     <xsl:variable name="footnoteClass">
       <xsl:choose>
         <xsl:when test="ancestor::w:del">
@@ -46684,42 +46635,38 @@
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
-    
-    <xsl:element name="a">
-      <!--<xsl:attribute name="class" select="'footnotecitation'"/>-->
       
-      <xsl:attribute name="class" select="$footnoteClass"/>
-      <xsl:attribute name="style">
-        <xsl:text>mso-footnote-id:ftn</xsl:text>
-        <xsl:choose>
-          <xsl:when test="ancestor::w:del">
-            <xsl:value-of select="@w:id"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>
-            <!--28/02/2020 below commented by prakash for footnote link issue so the xhtml_2_idml conversion it's become sorting issue    -->
-            <!--            <xsl:value-of select="@w:id"/>-->
-            <!--<xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>-->
-          </xsl:otherwise>
-        </xsl:choose>
+    <xsl:element name="a">
+        <!--<xsl:attribute name="class" select="'footnotecitation'"/>-->
         
-        <!--<xsl:value-of select="@w:id"/>-->
-      </xsl:attribute>
-      <xsl:attribute name="href">
-        <xsl:text>#_ftn</xsl:text>
-        <xsl:choose>
-          <xsl:when test="ancestor::w:del">
-            <xsl:value-of select="@w:id"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>
-            <!--28/02/2020 below commented by prakash for footnote link issue so the xhtml_2_idml conversion it's become sorting issue    -->
-            <!--            <xsl:value-of select="@w:id"/>-->
-            <!--<xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>-->
-          </xsl:otherwise>
-        </xsl:choose>
-        <!--<xsl:value-of select="@w:id"/>-->
-      </xsl:attribute>
+        <xsl:attribute name="class" select="$footnoteClass"/>
+        <xsl:attribute name="style">
+          <xsl:text>mso-footnote-id:ftn</xsl:text>
+          <xsl:choose>
+            <xsl:when test="ancestor::w:del">
+              <xsl:value-of select="@w:id"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <!--<xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>-->
+              <xsl:value-of select="@w:id"/>
+            </xsl:otherwise>
+          </xsl:choose>
+          
+          <!--<xsl:value-of select="@w:id"/>-->
+        </xsl:attribute>
+        <xsl:attribute name="href">
+          <xsl:text>#_ftn</xsl:text>
+          <xsl:choose>
+            <xsl:when test="ancestor::w:del">
+              <xsl:value-of select="@w:id"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <!--<xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>-->
+              <xsl:value-of select="@w:id"/>
+            </xsl:otherwise>
+          </xsl:choose>
+          <!--<xsl:value-of select="@w:id"/>-->
+        </xsl:attribute>
       
       <!--Added for marriapan editior 20-9-2019-->
       
@@ -46730,98 +46677,95 @@
             <xsl:value-of select="@w:id"/>
           </xsl:when>
           <xsl:otherwise>
-            <xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>
-            <!--28/02/2020 below commented by prakash for footnote link issue so the xhtml_2_idml conversion it's become sorting issue    -->
-            <!--            <xsl:value-of select="@w:id"/>-->
-            <!--<xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>-->
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:attribute>
-      
-      <xsl:attribute name="data-change" select="'footnoteadded'"/>
-      <!--End-->
-      
-      
-      
-      <xsl:attribute name="id">
-        <!-- 24-Sep-18: Commonly changed like comment,FT,EN -->
-        <xsl:text>_ftnref</xsl:text>
-        <xsl:choose>
-          <xsl:when test="ancestor::w:del">
             <xsl:value-of select="@w:id"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>
-            <!--28/02/2020 below commented by prakash for footnote link issue so the xhtml_2_idml conversion it's become sorting issue    -->
-            <!--            <xsl:value-of select="@w:id"/>-->
-            <!--<xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>-->
           </xsl:otherwise>
         </xsl:choose>
         
         <!--<xsl:value-of select="@w:id"/>-->
       </xsl:attribute>
-      <xsl:element name="span">
-        <xsl:attribute name="class" select="'MsoFootnoteReference'"/>
-        
-        <!--Added for marriappan 25-9-2019-->
-        <xsl:attribute name="data-type" select="'number'"/>
-        <!--End-->
-        
-        <!--<xsl:choose>
+      
+      <xsl:attribute name="data-change" select="'footnoteadded'"/>     
+      <!--End-->
+      
+      
+      
+      <xsl:attribute name="id"><!-- 24-Sep-18: Commonly changed like comment,FT,EN -->
+          <xsl:text>_ftnref</xsl:text>
+          <xsl:choose>
+            <xsl:when test="ancestor::w:del">
+              <xsl:value-of select="@w:id"/>
+            </xsl:when>
+            <xsl:otherwise>
+              <!--<xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>-->
+              <xsl:value-of select="@w:id"/>
+            </xsl:otherwise>
+          </xsl:choose>
+          
+          <!--<xsl:value-of select="@w:id"/>-->
+        </xsl:attribute>
+        <xsl:element name="span">
+          <xsl:attribute name="class" select="'MsoFootnoteReference'"/>
+          
+          <!--Added for marriappan 25-9-2019-->
+          <xsl:attribute name="data-type" select="'number'"/>
+          <!--End-->
+          
+          
+          <!--<xsl:choose>
             <xsl:when test="@w:customMarkFollows">
               <xsl:value-of select="following-sibling::"></xsl:value-of>
             </xsl:when>
           </xsl:choose>-->
-        <!-- Commented on 20-Mar-18 -->
-        <xsl:choose>
-          <xsl:when test="ancestor::w:del">
-            <xsl:value-of select="concat('', @w:id, '')"/>
-          </xsl:when>
-          <xsl:when test="following::w:sectPr[1]/w:footnotePr/w:numFmt[@w:val = 'chicago']">
-            <xsl:choose>
-              <xsl:when test="not(preceding::w:footnoteReference)">
-                <xsl:text>*</xsl:text>
-              </xsl:when>
-              <xsl:when test="count(preceding::w:footnoteReference) = 1">
-                <xsl:text>†</xsl:text>
-              </xsl:when>
-              <xsl:when test="count(preceding::w:footnoteReference) = 2">
-                <xsl:text>‡</xsl:text>
-              </xsl:when>
-              <xsl:when test="count(preceding::w:footnoteReference) = 3">
-                <xsl:text>§</xsl:text>
-              </xsl:when>
-              <xsl:when test="count(preceding::w:footnoteReference) = 4">
-                <xsl:text>††</xsl:text>
-              </xsl:when>
-              <xsl:when test="count(preceding::w:footnoteReference) = 5">
-                <xsl:text>‡‡</xsl:text>
-              </xsl:when>
-              <xsl:when test="count(preceding::w:footnoteReference) = 6">
-                <xsl:text>§§</xsl:text>
-              </xsl:when>
-              <xsl:when test="count(preceding::w:footnoteReference) = 7">
-                <xsl:text>†††</xsl:text>
-              </xsl:when>
-              <xsl:when test="count(preceding::w:footnoteReference) = 8">
-                <xsl:text>‡‡‡</xsl:text>
-              </xsl:when>
-              <xsl:when test="count(preceding::w:footnoteReference) = 9">
-                <xsl:text>§§§</xsl:text>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:text>*</xsl:text>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:text/>
-            <xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>
-            <xsl:text/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:element>
-    </xsl:element>
+          <!-- Commented on 20-Mar-18 --> 
+          <xsl:choose>
+            <xsl:when test="ancestor::w:del">
+              <xsl:value-of select="concat('',@w:id,'')"/>
+            </xsl:when>
+            <xsl:when test="following::w:sectPr[1]/w:footnotePr/w:numFmt[@w:val = 'chicago']">
+              <xsl:choose>
+                <xsl:when test="not(preceding::w:footnoteReference)">
+                  <xsl:text>*</xsl:text>
+                </xsl:when>                
+                <xsl:when test="count(preceding::w:footnoteReference) = 1">
+                  <xsl:text>†</xsl:text>
+                </xsl:when>
+                <xsl:when test="count(preceding::w:footnoteReference) = 2">
+                  <xsl:text>‡</xsl:text>
+                </xsl:when>
+                <xsl:when test="count(preceding::w:footnoteReference) = 3">
+                  <xsl:text>§</xsl:text>
+                </xsl:when>
+                <xsl:when test="count(preceding::w:footnoteReference) = 4">
+                  <xsl:text>††</xsl:text>
+                </xsl:when>
+                <xsl:when test="count(preceding::w:footnoteReference) = 5">
+                  <xsl:text>‡‡</xsl:text>
+                </xsl:when>
+                <xsl:when test="count(preceding::w:footnoteReference) = 6">
+                  <xsl:text>§§</xsl:text>
+                </xsl:when>
+                <xsl:when test="count(preceding::w:footnoteReference) = 7">
+                  <xsl:text>†††</xsl:text>
+                </xsl:when>
+                <xsl:when test="count(preceding::w:footnoteReference) = 8">
+                  <xsl:text>‡‡‡</xsl:text>
+                </xsl:when>
+                <xsl:when test="count(preceding::w:footnoteReference) = 9">
+                  <xsl:text>§§§</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:text>*</xsl:text>
+                </xsl:otherwise>
+              </xsl:choose>              
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:text></xsl:text>
+              <xsl:number level="any" count="w:footnoteReference[not(ancestor::w:del)]"/>
+              <xsl:text></xsl:text>
+            </xsl:otherwise>
+          </xsl:choose>
+        </xsl:element>
+      </xsl:element>    
   </xsl:template>
   
     
@@ -47103,7 +47047,7 @@
     <xsl:text>&#x000A;</xsl:text>
   </xsl:template>
   <xsl:template match="//w:endnoteRef">
-    <!--<xsl:element name="sup">-->
+    <xsl:element name="sup">
       <xsl:element name="a">
       <xsl:attribute name="href">
         <!--<a id="eref2" href="#e2">-->
@@ -47112,7 +47056,7 @@
       </xsl:attribute>
       <xsl:number from="/" level="any" format="1"/>
       </xsl:element>
-    <!--</xsl:element>-->
+    </xsl:element>
   </xsl:template>
   
   <xsl:template match="//w:endnote-18-sep-18" mode="endnote">
@@ -47313,14 +47257,11 @@
             <!-- 03-Apr-18: commented below. Added class and data-name for EndNotes -->
             <!--<xsl:attribute name="class" select="'MsoEndnoteText'"/> -->
             <!--<xsl:variable name="paragraphStyle" select="child::w:p[1]/w:pPr/w:pStyle/@w:val"/>-->
-            <!--<xsl:variable name="paragraphStyle" select="child::w:p[1]/w:pPr/w:pStyle/@w:val"/>-->
-            <xsl:variable name="paragraphStyle" select="child::w:pPr/w:pStyle[1]/@w:val"/>
+            <xsl:variable name="paragraphStyle" select="child::w:p[1]/w:pPr/w:pStyle/@w:val"/>
             <xsl:variable name="paragraphStyleName">
               <!-- 04-Apr-18: The below logic changed to resolve the speed issue to applu data-name-->
               <!--<xsl:value-of select="//w:style[@w:styleId = $paragraphStyle]/w:name/@w:val"/>-->
-              <!--<xsl:value-of select="/w:document/w:styles/w:style[@w:styleId = $paragraphStyle][1]/w:name/@w:val"/>-->
-              <!--10/12/2019 added by prakash-->
-              <xsl:value-of select="//w:document/w:styles/w:style[@w:styleId = $paragraphStyle][1]/w:name/@w:val"/>
+              <xsl:value-of select="/w:document/w:styles/w:style[@w:styleId = $paragraphStyle][1]/w:name/@w:val"/>
             </xsl:variable>
             <xsl:attribute name="class">
               <xsl:choose>
@@ -47339,13 +47280,9 @@
             </xsl:attribute>
             <xsl:attribute name="data-name">
               <xsl:choose>
-                <!--10/12/2019 added by prakash-->
-                <xsl:when test="child::w:pPr/w:pStyle[1]/@w:val">
+                <xsl:when test="child::w:p[1]/w:pPr/w:pStyle/@w:val">
                   <xsl:value-of select="$paragraphStyleName"/>
                 </xsl:when>
-                <!--<xsl:when test="child::w:p[1]/w:pPr/w:pStyle/@w:val">
-                  <xsl:value-of select="$paragraphStyleName"/>
-                </xsl:when>-->
                 <!--Added to get paragraph style for end note 19-7-2019-->
                 <xsl:when test="self::w:p[1]/w:pPr/w:pStyle/@w:val">
                   <xsl:value-of select="self::w:p[1]/w:pPr/w:pStyle/@w:val"/>

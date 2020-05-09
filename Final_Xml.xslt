@@ -142,5 +142,6 @@
         
     </xsl:template>
     <xsl:template match="@class"/>
+    <xsl:template match="p[@class = 'FigureLegend']"/>
     <xsl:template match="p[string-length(.) &lt;= 0]"/>
 </xsl:stylesheet>

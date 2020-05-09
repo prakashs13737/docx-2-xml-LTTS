@@ -1,118 +1,630 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xsl:stylesheet
-  version="2.0"
-  xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-  xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns:xsw="http://coko.foundation/xsweet"
-  xmlns="http://www.w3.org/1999/xhtml"
-  xpath-default-namespace="http://www.w3.org/1999/xhtml"
-  exclude-result-prefixes="#all">
+<!-- Last update 16-AUG-18 -->
+<!--(([A-Za-z-]+)([:][0]?)([pi][tn][;]?)) Failed font-style:it 3-9-2019-->
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:test="http://www.w3.org/1999/xhtml"
+    xmlns:mml="http://www.w3.org/1998/Math/MathML" 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:mynamespace="http://www.w3.org/1999/xhtml"
+    exclude-result-prefixes="#default"
+    version="2.0">
+    <!-- Moving DIV inside P, to outside P --> 
+    <!-- 15-AUG-18: Condition added to remove empty style attribute -->
+    
+    <xsl:output method="xhtml" indent="no"/>
+   <!-- <xsl:output method="xml" use-character-maps="Ascii2Unicode" indent="no"/>-->
+    <xsl:param name="myNameSpace" select="'http://www.w3.org/1999/xhtml'"/>
+    
+    
+    <xsl:template match="@*|node()">
+        <xsl:copy>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:copy>
+    </xsl:template>
+    
+    <xsl:template match="*">
+          <xsl:element name="{name()}">
+            <xsl:apply-templates select="@*"/>
+            <xsl:apply-templates/>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:variable name="filename" select="substring-before(tokenize(base-uri(.), '/')[last()],'.')"/>
+    
+    
+    <xsl:template match="html">
+        <xsl:message>Last update 27-Mar-18</xsl:message>
+        <xsl:text disable-output-escaping="yes">&lt;html xmlns="http://www.w3.org/1999/xhtml"&gt;</xsl:text>
+        <xsl:copy-of select="@*"/>
+        <xsl:apply-templates/>
+        <xsl:text>&#x000A;</xsl:text>
+        <xsl:text disable-output-escaping="yes">&lt;/html&gt;</xsl:text>
+    </xsl:template>
+    
+    <xsl:template match="ol[@type = 'nolist']">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="p[@type]">
+        <xsl:variable name="class" select="@class"/>
+        <xsl:variable name="type" select="@type"/>
 
-  <!-- Indent should really be no, but for testing. -->
-    <xsl:output method="xhtml" indent="no" omit-xml-declaration="yes" use-character-maps="Ascii2Unicode"/>
-  <!--<xsl:output method="xml" indent="no" omit-xml-declaration="yes" use-character-maps="Ascii2Unicode"/>-->
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>
+            <xsl:choose>
+                <xsl:when test="@indent">
+                    <xsl:value-of select="@indent"/> 
+                    <xsl:text disable-output-escaping="yes">;"&gt;</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@type"/>
+                    <xsl:text disable-output-escaping="yes">em;"&gt;</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;p class="</xsl:text>
+                <xsl:value-of select="$class"/>        
+            <xsl:text disable-output-escaping="yes">" </xsl:text>
+        <xsl:text disable-output-escaping="yes">type="</xsl:text>
+        <xsl:value-of select="$type"/>        
+        <xsl:text disable-output-escaping="yes">"&gt;</xsl:text>
+            <xsl:apply-templates/>
+            <xsl:text disable-output-escaping="yes">&lt;/p&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/div&gt;</xsl:text>  
+    </xsl:template>
+    
+    <xsl:template match="ol[@type = 'a']">
+        <xsl:if
+            test="not(preceding-sibling::*[1][self::ol[@type = 'a']])">
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>
+            <xsl:choose>
+                <xsl:when test="@indent">
+                    <xsl:value-of select="@indent"/> 
+                    <xsl:text disable-output-escaping="yes">;"&gt;</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@class"/>
+                    <xsl:text disable-output-escaping="yes">em;"&gt;</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text>&#x000A;</xsl:text>            
+            <xsl:text disable-output-escaping="yes">&lt;ol type="a"</xsl:text>
+            <xsl:if test="@class">
+                <xsl:text> class="</xsl:text>
+                <xsl:value-of select="@class"/>
+                <xsl:text>"</xsl:text>
+            </xsl:if>
+            <xsl:if test="@start">
+                <xsl:text> start="</xsl:text>
+                <xsl:value-of select="@start"/>
+                <xsl:text>"</xsl:text>
+            </xsl:if>                
+            <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>                        
+        </xsl:if>
+        <xsl:apply-templates/>
+        <xsl:if
+            test="not(following-sibling::*[1][self::ol[@type = 'a']])">            
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/ol&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/div&gt;</xsl:text>            
+        </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="ol[@type = 'A']">       
+        <xsl:if
+            test="not(preceding-sibling::*[1][self::ol[@type = 'A']])">
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>
+            <xsl:choose>
+                <xsl:when test="@indent">
+                    <xsl:value-of select="@indent"/> 
+                    <xsl:text disable-output-escaping="yes">;"&gt;</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@class"/>
+                    <xsl:text disable-output-escaping="yes">em;"&gt;</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;ol type="A"</xsl:text>
+            <xsl:if test="@class">
+                <xsl:text> class="</xsl:text>
+                <xsl:value-of select="@class"/>
+                <xsl:text>"</xsl:text>
+            </xsl:if>
+            <xsl:if test="@start">
+                <xsl:text> start="</xsl:text>
+                <xsl:value-of select="@start"/>
+                <xsl:text>"</xsl:text>
+            </xsl:if>                
+            <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>                        
+        </xsl:if>
+        <xsl:apply-templates/>
+        <xsl:if
+            test="not(following-sibling::*[1][self::ol[@type = 'A']])">            
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/ol&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/div&gt;</xsl:text> 
+        </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="ol[@type = 'i']">
+        <xsl:if
+            test="not(preceding-sibling::*[1][self::ol[@type = 'i']])">
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>
+            <xsl:choose>
+                <xsl:when test="@indent">
+                    <xsl:value-of select="@indent"/> 
+                    <xsl:text disable-output-escaping="yes">;"&gt;</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@class"/>
+                    <xsl:text disable-output-escaping="yes">em;"&gt;</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;ol type="i"</xsl:text>
+            <xsl:if test="@class">
+                <xsl:text> class="</xsl:text>
+                <xsl:value-of select="@class"/>
+                <xsl:text>"</xsl:text>
+            </xsl:if>
+            <xsl:if test="@start">
+                <xsl:text> start="</xsl:text>
+                <xsl:value-of select="@start"/>
+                <xsl:text>"</xsl:text>
+            </xsl:if>                
+            <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>                        
+        </xsl:if>
+        <xsl:apply-templates/>
+        <xsl:if
+            test="not(following-sibling::*[1][self::ol[@type = 'i']])">            
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/ol&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/div&gt;</xsl:text>
+        </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="ol[@type = 'I']">       
+        <xsl:if
+            test="not(preceding-sibling::*[1][self::ol[@type = 'I']])">
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>
+            <xsl:choose>
+                <xsl:when test="@indent">
+                    <xsl:value-of select="@indent"/> 
+                    <xsl:text disable-output-escaping="yes">;"&gt;</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@class"/>
+                    <xsl:text disable-output-escaping="yes">em;"&gt;</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;ol type="I"</xsl:text>
+            <xsl:if test="@class">
+                <xsl:text> class="</xsl:text>
+                <xsl:value-of select="@class"/>
+                <xsl:text>"</xsl:text>
+            </xsl:if>
+            <xsl:if test="@start">
+                <xsl:text> start="</xsl:text>
+                <xsl:value-of select="@start"/>
+                <xsl:text>"</xsl:text>
+            </xsl:if>                
+            <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>                        
+        </xsl:if>
+        <xsl:apply-templates/>
+        <xsl:if
+            test="not(following-sibling::*[1][self::ol[@type = 'I']])">            
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/ol&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/div&gt;</xsl:text> 
+        </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="ol">
+        <xsl:variable name="class" select="."/>
+        <xsl:variable name="start" select="."/>
+        <xsl:variable name="listType" select="child::*[1]/@listtype"/>
+        <xsl:variable name="numberFormat" select="child::*[1]/@numberFormat"/>
+        <xsl:variable name="numberType">
+            <xsl:choose>
+                <xsl:when test="child::*[1]/@numberType">
+                    <xsl:value-of select="child::*[1]/@numberType"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@numberType"/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:choose>
+            <xsl:when test="not(preceding-sibling::*[1][self::ol])">
+                <xsl:text>&#x000A;</xsl:text>
+                <xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>
+                <xsl:choose>
+                    <xsl:when test="@indent">
+                        <xsl:value-of select="@indent"/> 
+                        <xsl:text disable-output-escaping="yes">;"&gt;</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="@class"/>
+                        <xsl:text disable-output-escaping="yes">em;"&gt;</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <xsl:text>&#x000A;</xsl:text>
+                <xsl:text disable-output-escaping="yes">&lt;ol</xsl:text>
+                <xsl:if test="@class">
+                    <xsl:text> class="</xsl:text>
+                    <xsl:value-of select="@class"/>
+                    <xsl:text>"</xsl:text>
+                </xsl:if>
+                <xsl:if test="@start">
+                    <xsl:text> start="</xsl:text>
+                    <xsl:value-of select="@start"/>
+                    <xsl:text>"</xsl:text>
+                </xsl:if> 
+                <xsl:if test="@numberFormat">
+                    <xsl:text> type="</xsl:text>
+                    <xsl:choose>
+                        <xsl:when test="contains(@numberFormat, 'decimal')">
+                                    <xsl:choose>
+                                        <xsl:when test="contains(@numberFormat, '&#x0025;')">
+                                            <xsl:value-of select="substring-after(@numberFormat,'&#x0025;')"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:value-of select="@numberFormat"/>
+                                        </xsl:otherwise>
+                                    </xsl:choose>                                    
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'lowerLetter')">
+                                            <xsl:value-of select="'a'"/>        
+                        </xsl:when>                             
+                        <xsl:when test="contains(@numberFormat, 'upperLetter')">
+                                            <xsl:value-of select="'A'"/>                      
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'lowerRoman')">
+                                            <xsl:value-of select="'i'"/>                       
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'upperRoman')">
+                                            <xsl:value-of select="'I'"/>
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'bullet')">
+                                    <xsl:choose>
+                                        <xsl:when test="contains(@numberFormat, '&#x0025;')">
+                                            <xsl:value-of select="substring-after(@numberFormat,'&#x0025;')"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:value-of select="@numberFormat"/>
+                                        </xsl:otherwise>
+                                    </xsl:choose>                           
+                        </xsl:when>
+                    </xsl:choose>
+                    <xsl:text>"</xsl:text>
+                </xsl:if> 
+                <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+                <xsl:text>&#x000A;</xsl:text>
+            </xsl:when>
+            <xsl:when test="preceding-sibling::*[1][self::ol[@type]]">
+                <xsl:text>&#x000A;</xsl:text>
+                <xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>
+                <xsl:choose>
+                    <xsl:when test="@indent">
+                        <xsl:value-of select="@indent"/> 
+                        <xsl:text disable-output-escaping="yes">;"&gt;</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="@class"/>
+                        <xsl:text disable-output-escaping="yes">em;"&gt;</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <xsl:text>&#x000A;</xsl:text> 
+                <xsl:text disable-output-escaping="yes">&lt;ol</xsl:text>
+                <xsl:if test="@class">
+                    <xsl:text> class="</xsl:text>
+                    <xsl:value-of select="@class"/>
+                    <xsl:text>"</xsl:text>
+                </xsl:if>
+                <xsl:if test="@start">
+                    <xsl:text> start="</xsl:text>
+                    <xsl:value-of select="@start"/>
+                    <xsl:text>"</xsl:text>
+                </xsl:if> 
+                <xsl:if test="@numberFormat">
+                    <xsl:text> type="</xsl:text>
+                    <!--<xsl:value-of select="@numberFormat"/>-->
+                    <xsl:choose>
+                        <xsl:when test="contains(@numberFormat, 'decimal')">
+                            <xsl:choose>
+                                <xsl:when test="contains(@numberFormat, '&#x0025;')">
+                                    <xsl:value-of select="substring-after(@numberFormat,'&#x0025;')"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="@numberFormat"/>
+                                </xsl:otherwise>
+                            </xsl:choose>                                    
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'lowerLetter')">
+                            <xsl:value-of select="'a'"/>        
+                        </xsl:when>                             
+                        <xsl:when test="contains(@numberFormat, 'upperLetter')">
+                            <xsl:value-of select="'A'"/>                      
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'lowerRoman')">
+                            <xsl:value-of select="'i'"/>                       
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'upperRoman')">
+                            <xsl:value-of select="'I'"/>
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'bullet')">
+                            <xsl:choose>
+                                <xsl:when test="contains(@numberFormat, '&#x0025;')">
+                                    <xsl:value-of select="substring-after(@numberFormat,'&#x0025;')"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="@numberFormat"/>
+                                </xsl:otherwise>
+                            </xsl:choose>                           
+                        </xsl:when>
+                    </xsl:choose>
+                    <xsl:text>"</xsl:text>
+                </xsl:if>
+                <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+                <xsl:text>&#x000A;</xsl:text>  
+            </xsl:when>
+            <xsl:when test="preceding-sibling::*[1][self::ol[@start]] and not(self::ol[@start])">
+                <xsl:text>&#x000A;</xsl:text>
+                <xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>
+                <xsl:choose>
+                    <xsl:when test="@indent">
+                        <xsl:value-of select="@indent"/> 
+                        <xsl:text disable-output-escaping="yes">;"&gt;</xsl:text>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="@class"/>
+                        <xsl:text disable-output-escaping="yes">em;"&gt;</xsl:text>
+                    </xsl:otherwise>
+                </xsl:choose>
+                <xsl:text>&#x000A;</xsl:text> 
+                <xsl:text disable-output-escaping="yes">&lt;ol</xsl:text>
+                <xsl:if test="@class">
+                    <xsl:text> class="</xsl:text>
+                    <xsl:value-of select="@class"/>
+                    <xsl:text>"</xsl:text>
+                </xsl:if>
+                <xsl:if test="@start">
+                    <xsl:text> start="</xsl:text>
+                    <xsl:value-of select="@start"/>
+                    <xsl:text>"</xsl:text>
+                </xsl:if>  
+                <xsl:if test="@numberFormat">
+                    <xsl:text> type="</xsl:text>
+                    <xsl:choose>
+                        <xsl:when test="contains(@numberFormat, 'decimal')">
+                            <xsl:choose>
+                                <xsl:when test="contains(@numberFormat, '&#x0025;')">
+                                    <xsl:value-of select="substring-after(@numberFormat,'&#x0025;')"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="@numberFormat"/>
+                                </xsl:otherwise>
+                            </xsl:choose>                                    
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'lowerLetter')">
+                            <xsl:value-of select="'a'"/>        
+                        </xsl:when>                             
+                        <xsl:when test="contains(@numberFormat, 'upperLetter')">
+                            <xsl:value-of select="'A'"/>                      
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'lowerRoman')">
+                            <xsl:value-of select="'i'"/>                       
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'upperRoman')">
+                            <xsl:value-of select="'I'"/>
+                        </xsl:when>
+                        <xsl:when test="contains(@numberFormat, 'bullet')">
+                            <xsl:choose>
+                                <xsl:when test="contains(@numberFormat, '&#x0025;')">
+                                    <xsl:value-of select="substring-after(@numberFormat,'&#x0025;')"/>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:value-of select="@numberFormat"/>
+                                </xsl:otherwise>
+                            </xsl:choose>                           
+                        </xsl:when>
+                    </xsl:choose>
+                    <xsl:text>"</xsl:text>
+                </xsl:if>
+                <xsl:text disable-output-escaping="yes">&gt;</xsl:text>
+                <xsl:text>&#x000A;</xsl:text>  
+            </xsl:when>            
+        </xsl:choose>
+        <xsl:apply-templates/>
+        <xsl:if
+            test="not(following-sibling::*[1][self::ol])">            
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/ol&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/div&gt;</xsl:text> 
+        </xsl:if>
+        <xsl:if
+            test="following-sibling::*[1][self::ol[@type]]">            
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/ol&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/div&gt;</xsl:text> 
+        </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="ul[@style = 'o']">       
+        <xsl:if
+            test="not(preceding-sibling::*[1][self::ul[@style = 'o']])">
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;div style="position:relative; margin-left:</xsl:text>
+            <xsl:choose>
+                <xsl:when test="@indent">
+                    <xsl:value-of select="@indent"/> 
+                    <xsl:text disable-output-escaping="yes">;"&gt;</xsl:text>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="@class"/>
+                    <xsl:text disable-output-escaping="yes">em;"&gt;</xsl:text>
+                </xsl:otherwise>
+            </xsl:choose>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;ul style="o" class="</xsl:text>
+            <xsl:value-of select="@class"/>
+            <xsl:text disable-output-escaping="yes">"&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>                        
+        </xsl:if>
+        <xsl:apply-templates/>
+        <xsl:if
+            test="not(following-sibling::*[1][self::ul[@style = 'o']])">            
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/ul&gt;</xsl:text>
+            <xsl:text>&#x000A;</xsl:text>
+            <xsl:text disable-output-escaping="yes">&lt;/div&gt;</xsl:text> 
+        </xsl:if>
+    </xsl:template>
+    
+    
+    
+    
+    <xsl:template match="mynamespace:FIGURE-REF1 | mynamespace:TABLE-REF1">
 
+        <xsl:element name="a">
+                <xsl:attribute name="href">
+                    <xsl:value-of select="concat($filename, '#', ./@POINTER)"/>
+                </xsl:attribute>
+                <xsl:apply-templates/>
+        </xsl:element>        
+    </xsl:template>
+    
+    <xsl:template match="FIGURE-REF | TABLE-REF"/>
+    
+    <xsl:template match="mynamespace:FIGURE">       
+        <FIGURE>
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates/>
+        </FIGURE>
+    </xsl:template>
+    
+    <xsl:template match="mynamespace:TABLE-WRAPPER">
+        <xsl:apply-templates/>
+    </xsl:template>
+    
+    <xsl:template match="table">
+        <xsl:element name="{name(.)}" namespace="{$myNameSpace}">
+            <xsl:if test="parent::mynamespace:TABLE-WRAPPER/@id">
+                <xsl:attribute name="id">
+                    <xsl:value-of select="parent::mynamespace:TABLE-WRAPPER/@id"/>
+                </xsl:attribute>
+            </xsl:if>
+            <xsl:copy-of select="@*"/>
+                <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
+    </xsl:template>
+    
+    <xsl:template match="imgg">  
+        <xsl:element name="img">
+        <xsl:apply-templates select="@*"/>
+        </xsl:element>
+    </xsl:template>
+    
+    <!-- 09-04-16: This below template match is to move imgs,tables inside ul/ol to outside of ulol -->
+    <xsl:template match="div">
+        <xsl:element name="{local-name()}">
+            <xsl:apply-templates select="node()|@*"/>
+        </xsl:element>
+        <xsl:if test="child::ul/table">
+            <xsl:for-each select="child::ul/table">
+                <xsl:text>&#x000A;</xsl:text>
+                <xsl:element name="table">
+                    <xsl:apply-templates select="node()|@*"/>
+                </xsl:element>
+            </xsl:for-each>
+        </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="ul[not(parent::div)] | ol[not(parent::div)]">
+        <xsl:element name="{local-name()}">
+            <xsl:apply-templates select="node()|@*"/>
+        </xsl:element>
+        <xsl:if test="child::div">
+            <xsl:for-each select="child::div">
+                <xsl:text>&#x000A;</xsl:text> 
+                <xsl:element name="div">
+                    <xsl:apply-templates select="node()|@*"/>
+                </xsl:element>
+                <xsl:text>&#x000A;</xsl:text> 
+            </xsl:for-each>
+        </xsl:if>
+        <xsl:if test="child::table">
+            <xsl:for-each select="child::table">
+                <xsl:text>&#x000A;</xsl:text>
+                <xsl:element name="table">
+                    <xsl:apply-templates select="node()|@*"/>
+                </xsl:element>
+            </xsl:for-each>
+        </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="ul//div"/>
+    <xsl:template match="ul//table"/>
+    <xsl:template match="div//ul/table"/>
+    <xsl:template match="@v"/>
+    <xsl:template match="@m"/>
+    <xsl:template match="@o"/>
+    <xsl:template match="@v2"/>
+    <xsl:template match="@v3"/>
+    <xsl:template match="bibsurname">
+        <xsl:element name="span">
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
+    </xsl:template>
+    <xsl:template match="bibyear">
+        <xsl:element name="span">
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
+    </xsl:template>
+    
 
-  <!-- XSweet: Further reduces haphazard redundancy in markup by joining adjacent elements with similar properties .... [3d] -->
-  <!-- Input: A messy noisy HTML document needing (yet more) streamlining and cleanup. -->
-  <!-- Output: A copy, with improvements. -->
+    <xsl:template match="//span[@style = '']"><!-- 15-AUG-18: Condition added to remove empty style attribute -->
+        <xsl:element name="span">
+            <xsl:copy-of select="@*[not(name()='style')]"/>
+            <xsl:apply-templates/>
+        </xsl:element> 
+    </xsl:template>
+    
+    <xsl:template match="//div[@class = 'WordSection1']">
+          <xsl:apply-templates/>
+    </xsl:template>    
+     
+
+    
+<!-- 15-June-17: added attribute "data-split" for the elements asked by Mariappan-->
+    <xsl:template match="p|img|li|div|ol|ul">
+        <xsl:element name="{local-name()}">            
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
+    </xsl:template>
+<!-- 15-June-17: added attribute "data-split" for the elements asked by Mariappan-->
   
-  <!-- Copy everything by default. -->
-  <xsl:template match="@*|node()">        
-    <xsl:copy>            
-      <xsl:apply-templates select="@*|node()"/>
-    </xsl:copy>
-  </xsl:template>
-
-  <!-- Copy 'p', and merge what's inside it. -->
-  <xsl:template match="//p|//ref|//span[not(@data-bkmark)]|//li">
-    <xsl:copy>
-      <xsl:copy-of select="@*"/>
-      <xsl:call-template name="collapse-ilk"/>
-    </xsl:copy>
-  </xsl:template>
-
-  <!-- Merge logic accepts a sequence of nodes (by default,
-       children of the context node where called) and returns
-       sequences where 'like' nodes in sequence are merged.
-       So <u>Moby </u><u>Dick</u> comes back <u>Moby Dick</u>.
-
-       'Likeness' is established by xsw:node-signature, and permits elements
-       of the same type and attribute values to be merged accorrding
-       to logic given in the hashing templates.
-  -->
-
-  <xsl:template name="collapse-ilk">
-    <xsl:param name="among" select="node()"/>
-    <xsl:for-each-group select="$among" group-adjacent="xsw:node-signature(.)">
-      <xsl:choose>
-          <xsl:when test="exists(current-group()/self::span[@data-bkmark])">
-              <xsl:copy-of select="current-group()"/>
-          </xsl:when>
-        <xsl:when test="exists(current-group()/self::*)">
-          <xsl:for-each select="current-group()[self::*][1]">
-            <!-- In the element case, splice in an element. -->
-            <xsl:copy>
-              <xsl:copy-of select="@*"/>
-              <xsl:call-template name="collapse-ilk">
-                <xsl:with-param name="among" select="current-group()/(node(),self::text())"/>
-              </xsl:call-template>
-            </xsl:copy>
-          </xsl:for-each>
-        </xsl:when>
-        <xsl:otherwise>
-          <xsl:copy-of select="current-group()"/>
-        </xsl:otherwise>
-      </xsl:choose>
-      <!-- Splice in anything not an element. -->
-    </xsl:for-each-group>
-  </xsl:template>
-
-  <xsl:function name="xsw:node-signature" as="xs:string">
-    <xsl:param name="n" as="node()"/>
-    <xsl:value-of separator="|">
-      <xsl:apply-templates mode="signature" select="$n"/>
-    </xsl:value-of>
-  </xsl:function>
-
-  <!-- Note we're going to collapse things with the same (local) name
-       though in different namespaces - this ain't lookin to be namespace safe. -->
-  <xsl:template mode="signature" match="*">
-    <xsl:value-of select="local-name()"/>
-    <xsl:for-each select="@*">
-      <xsl:sort select="local-name()"/>
-      <xsl:if test="position() ne 1"> ::: </xsl:if>
-      <xsl:apply-templates mode="#current" select="."/>
-    </xsl:for-each>
-  </xsl:template>
-
-  <xsl:template mode="signature" match="@*">
-    <xsl:value-of select="local-name(),." separator="="/>
-  </xsl:template>
-
-  <!-- These guys should never collapse so their hash is always unique to them.-->
-  <xsl:template mode="signature" match="div | p | tab | ref">
-    <xsl:value-of select="local-name(.)"/>
-    <xsl:value-of select="generate-id(.)"/>
-  </xsl:template>
-
-  <!-- ws-only text nodes, PIs and comments should be merged with adjacent elements
-       iff those nodes are being merged together. -->
-  <xsl:template mode="signature" match="text() | comment() | processing-instruction()">
-    <xsl:variable name="fore" select="preceding-sibling::*[1]/xsw:node-signature(.)"/>
-    <xsl:variable name="aft"  select="following-sibling::*[1]/xsw:node-signature(.)"/>
-    <xsl:value-of select="if ($fore = $aft) then $fore else generate-id(.)"/>
-  </xsl:template>
-
-  <!-- However, text nodes that are not ws-only should not merge with adjacent elements
-       even when they are alike e.g. <i>there</i> it goes <i>again</i> ... -->
-  <!-- This template has a supervening priority over the preceding one, i.e. 0.5 to -0.5 -->
-  <xsl:template mode="signature" match="text()[matches(.,'\S')]">
-    <xsl:value-of select="generate-id(.)"/>
-  </xsl:template>
-
-
-    <xsl:character-map name="Ascii2Unicode">
+  <xsl:character-map name="Ascii2Unicode">
 <xsl:output-character character="┐" string="&amp;#x2510;"/>
 <xsl:output-character character="╕" string="&amp;#x2556;"/>
 <xsl:output-character character="╖" string="&amp;#x2557;"/>
@@ -306,7 +818,7 @@
 <xsl:output-character character="Ô" string="&amp;#x00D4;"/>
 <xsl:output-character character="ò" string="&amp;#x00F2;"/>
 <xsl:output-character character="Ò" string="&amp;#x00D2;"/>
-<xsl:output-character character="ø" string="&amp;#x2298;"/>
+<xsl:output-character character="ø" string="&amp;#x00F8;"/>
 <xsl:output-character character="Ø" string="&amp;#x00D8;"/>
 <xsl:output-character character="õ" string="&amp;#x00F5;"/>
 <xsl:output-character character="Õ" string="&amp;#x00D5;"/>
@@ -453,9 +965,9 @@
 <xsl:output-character character="&amp;" string="&amp;#x0026;"/>
 <xsl:output-character character="‘" string="&amp;#x2018;"/>
 <xsl:output-character character="’" string="&amp;#x2019;"/>
-    <xsl:output-character character="‧" string="&amp;#x2027;"/>
+      <xsl:output-character character="‧" string="&amp;#x2027;"/>
     <!--<xsl:output-character character="'" string="&amp;#x0027;"/>-->
-<!--<xsl:output-character character="*" string="&amp;#x002A;"/>-->
+<xsl:output-character character="*" string="&amp;#x002A;"/>
 <xsl:output-character character="¦" string="&amp;#x00A6;"/>
     <!--U0005C bsol-->
 <xsl:output-character character="¢" string="&amp;#x00A2;"/>
@@ -491,20 +1003,21 @@
     <!--U0005F lowbar-->
     <!--U00028 lpar-->
     <!--U0005B lsqb-->
-    
+      
     <!--U0003C lt-->
 <xsl:output-character character="µ" string="&amp;#x00B5;"/>
 <xsl:output-character character="·" string="&amp;#x00B7;"/>
 <xsl:output-character character=" " string="&amp;#x2003;"/>
 <xsl:output-character character=" " string="&amp;#x2002;"/>
-<xsl:output-character character=" " string="&amp;#x00A0;"/>    
+      
+<!--<xsl:output-character character=" " string="&amp;#x00A0;"/>-->
 <xsl:output-character character="¬" string="&amp;#x00AC;"/>
     <!--U00023 num-->
 <xsl:output-character character="Ω" string="&amp;#x2126;"/>
 <xsl:output-character character="ª" string="&amp;#x00AA;"/>
 <xsl:output-character character="º" string="&amp;#x00BA;"/>
 <xsl:output-character character="¶" string="&amp;#x00B6;"/>
-<!--<xsl:output-character character="%" string="&amp;#x0025;"/>-->
+<xsl:output-character character="%" string="&amp;#x0025;"/>
     <!--U0002E period-->
 <xsl:output-character character="+" string="&amp;#x002B;"/>
 <xsl:output-character character="±" string="&amp;#x00B1;"/>
@@ -555,6 +1068,7 @@
 <xsl:output-character character="▾" string="&amp;#x25BE;"/>
 <xsl:output-character character=" " string="&amp;#x2004;"/>
 <xsl:output-character character=" " string="&amp;#x2005;"/>
+<!--<xsl:output-character character=" " string="&#160;"/>-->
 <xsl:output-character character="♀" string="&amp;#x2640;"/>
 <xsl:output-character character="ﬃ" string="&amp;#xFB03;"/>
 <xsl:output-character character="ﬀ" string="&amp;#xFB00;"/>
@@ -570,7 +1084,7 @@
 <xsl:output-character character="⅗" string="&amp;#x2157;"/>
 <xsl:output-character character="⅘" string="&amp;#x2158;"/>
 <xsl:output-character character="⅚" string="&amp;#x215A;"/>
-<xsl:output-character character=" " string="&amp;#x200A;"/>
+<xsl:output-character character=" " string="&amp;#x2009;"/>
 <xsl:output-character character="♥" string="&amp;#x2665;"/>
 <xsl:output-character character="…" string="&amp;#x2026;"/>
 <xsl:output-character character="⁃" string="&amp;#x2043;"/>
@@ -589,7 +1103,6 @@
 <xsl:output-character character="…" string="&amp;#x2026;"/>
     <!-- mldr -->
 <xsl:output-character character="♮" string="&amp;#x266E;"/>
-<xsl:output-character character="‒" string="&amp;#x2012;"/>
 <xsl:output-character character="–" string="&amp;#x2013;"/>
 <xsl:output-character character="‥" string="&amp;#x2025;"/>
 <xsl:output-character character=" " string="&amp;#x2007;"/>
@@ -609,7 +1122,7 @@
 <xsl:output-character character="★" string="&amp;#x2605;"/>
 <xsl:output-character character="⌖" string="&amp;#x2316;"/>
 <xsl:output-character character="⌕" string="&amp;#x2315;"/>
-<xsl:output-character character=" " string="&amp;#2009;"/>
+<xsl:output-character character=" " string="&#160;"/>
 <xsl:output-character character="▀" string="&amp;#x2580;"/>
 <xsl:output-character character="⌏" string="&amp;#x230F;"/>
 <xsl:output-character character="⌎" string="&amp;#x230E;"/>
@@ -1822,6 +2335,90 @@
 <xsl:output-character character="" string="&amp;#x0062;"/>
 <xsl:output-character character="ə" string="&amp;#x0259;"/>
 <xsl:output-character character=" " string="&amp;#x2029;"/>
-</xsl:character-map>
+  </xsl:character-map>
   
+  <xsl:template match="//p|//tr|//td|//div|//table|//colgroup|//cols|//tbody">
+    <xsl:element name="{local-name()}">
+        <xsl:apply-templates select="@*|node()"/>
+    </xsl:element>
+    <xsl:text>&#x000A;</xsl:text>
+</xsl:template>
+    <xsl:template match="//td">
+        <xsl:text>&#x000A;</xsl:text>
+        <xsl:element name="{local-name()}">            
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>        
+    </xsl:template>
+    
+    <!-- Moving DIV inside P, to outside P -->
+    <xsl:template match="//p">
+        <xsl:element name="{name()}">
+            <xsl:copy-of select="@*"/>
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
+        <xsl:text>&#x000A;</xsl:text>
+        <xsl:if test="descendant-or-self::div">
+            <xsl:for-each select="descendant-or-self::div">
+                <xsl:element name="div">
+                    <xsl:copy-of select="@*"/>
+                    <xsl:apply-templates select="@*|node()"/>
+                </xsl:element>
+                <xsl:text>&#x000A;</xsl:text>
+            </xsl:for-each>
+        </xsl:if>
+    </xsl:template>    
+    <xsl:template match="p//div"/>
+    
+    <!-- Moving DIV inside P, to outside P ENDS here-->
+    <xsl:template match="//tr|//td|//table|//colgroup|//cols|//tbody|//div">
+        <xsl:element name="{local-name()}">
+            <xsl:apply-templates select="@*|node()"/>
+        </xsl:element>
+        <xsl:text>&#x000A;</xsl:text>
+    </xsl:template> 
+    <xsl:template match="//td">
+        <xsl:element name="td">             
+            <xsl:copy-of select="@style"/>
+            <xsl:copy-of select="@colspan"/>
+            <xsl:copy-of select="@rowspan"/>
+            <xsl:choose>
+                <xsl:when test="@Themeformat = 'BI'">
+                    <xsl:element name="b">
+                        <xsl:element name="i">
+                            <xsl:apply-templates/>
+                        </xsl:element>
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@Themeformat = 'B'">
+                    <xsl:element name="b">                         
+                        <xsl:apply-templates/>                         
+                    </xsl:element>
+                </xsl:when>
+                <xsl:when test="@Themeformat = 'i'">
+                    <xsl:element name="I">                         
+                        <xsl:apply-templates/>                         
+                    </xsl:element>
+                </xsl:when>
+                <xsl:otherwise>                     
+                    <xsl:apply-templates/>                         
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:element>
+        <xsl:text>&#x000A;</xsl:text>
+    </xsl:template> 
+    <!--<xsl:template match="//td/@Themeformat"/>-->
+    
+    <xsl:template match="@style">
+        <xsl:attribute name="style">
+            <xsl:choose>
+                <!--margin-left:0pt;--> <!--(([A-Za-z-]+)([:][0]?)([pi][tn][;]?)) Failed font-style:it 3-9-2019-->
+                <xsl:when test="matches(.,'(([A-Za-z-]+)([:][0])([pi][tn][;]?))')">
+                    <xsl:value-of select="replace(.,'(([A-Za-z-]+)([:][0])([pi][tn][;]?))','')"></xsl:value-of>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="."/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+    </xsl:template>
 </xsl:stylesheet>
